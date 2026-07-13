@@ -82,3 +82,9 @@ mod.range = "26.1-26.1.2"
 mod.mc_compat = ">=26.1 <=26.1.2"
 mod.mc_releases = ["26.1", "26.1.1", "26.1.2"]
 deps.fabric_api = "0.152.1+26.1.2"
+
+["26.2"]
+mod.range = "26.2"
+mod.mc_compat = ">=26.2 <=26.2"
+mod.mc_releases = ["26.2"]
+deps.fabric_api = "0.154.2+26.2"

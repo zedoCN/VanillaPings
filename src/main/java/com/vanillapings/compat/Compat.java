@@ -3,6 +3,9 @@ package com.vanillapings.compat;
 import com.vanillapings.mixin.ArmorStandEntityAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+//? if >=26.2 {
+/*import net.minecraft.world.entity.EntityTypes;
+*///?}
 import net.minecraft.world.entity.EquipmentSlot;
 //? if >=1.21.3 {
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -12,7 +15,11 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+//? if >=26.2 {
+/*import net.minecraft.world.item.DyeColor;
+*///?}
 //? if >=1.19.4 {
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Holder;
@@ -150,6 +157,15 @@ public final class Compat {
         *///?}
     }
 
+    /** The default ping item (blue stained glass). At 26.2 the per-color item constants ({@code Items.BLUE_STAINED_GLASS}, ...) were unified into the {@code Items.STAINED_GLASS} {@code ColorCollection}. */
+    public static Item defaultPingItem() {
+        //? if >=26.2 {
+        /*return Items.STAINED_GLASS.pick(DyeColor.BLUE);
+        *///?} else {
+        return Items.BLUE_STAINED_GLASS;
+        //?}
+    }
+
     /** True if two stacks carry equal enchantments. Storage became the {@code getEnchantments()} component at 1.20.5; older versions expose the raw NBT list. */
     public static boolean enchantmentsMatch(ItemStack a, ItemStack b) {
         //? if >=1.20.5 {
@@ -199,7 +215,13 @@ public final class Compat {
     @Nullable
     public static ArmorStand spawnPingArmorStand(Level world, Vec3 pos, Component customName, ItemStack headItem) {
         //? if >=1.20.5 {
-        return EntityType.ARMOR_STAND.spawn(
+        // The per-entity type constants moved from EntityType to the EntityTypes holder class at 26.2.
+        //? if >=26.2 {
+        /*EntityType<ArmorStand> armorStandType = EntityTypes.ARMOR_STAND;*/
+        //?} else {
+        EntityType<ArmorStand> armorStandType = EntityType.ARMOR_STAND;
+        //?}
+        return armorStandType.spawn(
                 (ServerLevel) world,
                 armorStand -> configurePingArmorStand(armorStand, customName, headItem, pos),
                 BlockPos.containing(pos),

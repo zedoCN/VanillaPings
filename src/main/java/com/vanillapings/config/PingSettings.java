@@ -3,7 +3,6 @@ package com.vanillapings.config;
 import com.vanillapings.compat.Compat;
 import com.vanillapings.translation.Translator;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class PingSettings extends Settings {
     private boolean pingRemoveOld = true;
     private boolean pingGlowing = true;
     private boolean pingGlowingFlash = true;
-    private Item pingItem = Items.BLUE_STAINED_GLASS;
+    private Item pingItem = Compat.defaultPingItem();
 
     public boolean registerSettingsEvent(SettingsEvent event) {
         return settingEvents.add(event);
@@ -92,7 +91,7 @@ public class PingSettings extends Settings {
             String itemIdentifier = Objects.requireNonNull(cfg.getString(KEY_PING_ITEM));
             var pingItemIdentifier = Compat.id(itemIdentifier);
             if(!Compat.itemExists(pingItemIdentifier))
-                pingItem = Items.BLUE_STAINED_GLASS;
+                pingItem = Compat.defaultPingItem();
             else
                 pingItem = Compat.getItem(pingItemIdentifier);
         }
