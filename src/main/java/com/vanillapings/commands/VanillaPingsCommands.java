@@ -8,7 +8,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vanillapings.VanillaPings;
 import com.vanillapings.compat.Compat;
 import com.vanillapings.features.ping.PingManager;
+import com.vanillapings.translation.Translations;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.server.MinecraftServer;
@@ -16,9 +18,10 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static net.minecraft.commands.Commands.argument;
@@ -38,6 +41,8 @@ public class VanillaPingsCommands {
                                         .executes(ctx -> LanguageCommand.setLanguage(ctx, "en_us")))
                                 .then(literal("de_de")
                                     .executes(ctx -> LanguageCommand.setLanguage(ctx, "de_de")))
+                                .then(literal("zh_cn")
+                                    .executes(ctx -> LanguageCommand.setLanguage(ctx, "zh_cn")))
                                 .then(argument("custom", StringArgumentType.word())
                                         .executes(ctx -> LanguageCommand.setLanguage(ctx, StringArgumentType.getString(ctx, "custom"))))
                         )
@@ -86,12 +91,31 @@ public class VanillaPingsCommands {
         ));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                 literal("ping")
-                        .requires(serverCommandSource -> serverCommandSource.getEntity() != null)
                         .executes(ctx -> {
-                            PingManager.pingWithCooldown((ServerPlayer) Objects.requireNonNull(ctx.getSource().getEntity()));
+                            PingManager.pingWithCooldown(ctx.getSource().getPlayerOrException());
                             return Command.SINGLE_SUCCESS;
                         })
+                        .then(argument("position", Vec3Argument.vec3())
+                                .requires(Compat::isAdmin)
+                                .executes(ctx -> pingAtCoordinates(ctx.getSource(), Vec3Argument.getVec3(ctx, "position"))))
         ));
+    }
+
+    private static int pingAtCoordinates(CommandSourceStack source, Vec3 position) {
+        if (!Double.isFinite(position.x) || !Double.isFinite(position.y) || !Double.isFinite(position.z)) {
+            source.sendFailure(Translations.PING_POSITION_UNAVAILABLE.constructMessage());
+            return 0;
+        }
+        BlockPos blockPosition = BlockPos.containing(position);
+        if (source.getLevel().isOutsideBuildHeight(blockPosition)
+                || !source.getLevel().getWorldBorder().isWithinBounds(blockPosition)
+                || !source.getLevel().isLoaded(blockPosition)) {
+            source.sendFailure(Translations.PING_POSITION_UNAVAILABLE.constructMessage());
+            return 0;
+        }
+
+        PingManager.pingAtPosition(position, null, null, source.getLevel());
+        return Command.SINGLE_SUCCESS;
     }
 
     public static void broadcastCommandUsageToOperators(Component message, CommandSourceStack source) {

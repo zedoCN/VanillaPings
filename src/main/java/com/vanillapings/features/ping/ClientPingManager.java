@@ -35,8 +35,8 @@ public class ClientPingManager {
         }
         // Upstream servers remain usable, but cannot know a detached camera's position.
         if (client.getCameraEntity() != client.player) {
-            com.vanillapings.compat.Compat.sendActionBar(client.player, net.minecraft.network.chat.Component.literal(
-                    "Free-camera pings require the Vanilla Pings camera fork on the server."));
+            com.vanillapings.compat.Compat.sendActionBar(client.player, net.minecraft.network.chat.Component.translatable(
+                    "vanillapings.ping.camera.server_required"));
             return;
         }
         if (!ClientPlayNetworking.canSend(PingNetworking.PingPayload.ID)) return;

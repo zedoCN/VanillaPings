@@ -2,6 +2,7 @@ package com.vanillapings.translation;
 
 import com.vanillapings.util.Triple;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
@@ -33,6 +34,7 @@ public class Translations {
     public static final String KEY_PING_DIRECTION_MESSAGE_RANGE = KEY_PING_RANGE + ".direction";
     public static final String KEY_PING_COOLDOWN = KEY_PING + ".cooldown";
     public static final String KEY_PING_DIRECTION_MESSAGE = KEY_PING + ".message_directional";
+    public static final String KEY_PING_POSITION_UNAVAILABLE = KEY_PING + ".position_unavailable";
 
     public static final Translatable PING = new Translatable(
             translator -> translator.getAsText(KEY_PING)
@@ -50,6 +52,10 @@ public class Translations {
 
     public static final Translatable LANGUAGE_ERROR = new Translatable(
             translator -> translator.getAsText(KEY_LANG_ERROR)
+    );
+
+    public static final Translatable PING_POSITION_UNAVAILABLE = new Translatable(
+            translator -> translator.getAsText(KEY_PING_POSITION_UNAVAILABLE)
     );
 
     public static final TranslatableSingle<Integer> REMOVED_OLD = new TranslatableSingle<>(
@@ -127,7 +133,10 @@ public class Translations {
 
           MutableComponent text = Component.literal(String.format(msg, extra.first()));
           text.append(extra.second());
-          text.append(Component.literal(String.format(msg2,  extra.third().getX(), extra.third().getY(), extra.third().getZ())));
+          String coordinates = String.format("%d %d %d", extra.third().getX(), extra.third().getY(), extra.third().getZ());
+          text.append(Component.literal(String.format(msg2, extra.third().getX(), extra.third().getY(), extra.third().getZ()))
+                  .withStyle(style -> style.withUnderlined(true)
+                          .withClickEvent(new ClickEvent.SuggestCommand(coordinates))));
           text.withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
 
           return text;

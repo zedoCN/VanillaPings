@@ -8,6 +8,8 @@
   "vanillapings.ping.remove_old": "%d alte Pings entfernt",
   "vanillapings.ping.message": "%s pingt %2s bei (x: %d, y: %d, z: %d)",
   "vanillapings.ping.message_directional": "Ping %s %d %s",
+  "vanillapings.ping.position_unavailable": "Eine ungeladene oder außerhalb der Welt liegende Position kann nicht markiert werden",
+  "vanillapings.ping.camera.server_required": "Free-Camera-Pings benötigen den Vanilla-Pings-Camera-Fork auf dem Server",
   "vanillapings.ping.play_sound": "Ping-Ton",
   "vanillapings.ping.glowing": "Ping-Leuchten",
   "vanillapings.ping.glowing.flash": "Ping-Blinken",

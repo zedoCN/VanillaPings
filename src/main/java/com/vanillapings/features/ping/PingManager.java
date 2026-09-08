@@ -138,7 +138,7 @@ public class PingManager {
      * @param player The player that owns the cast and whose name gets broadcast on an entity ping.
      * @param world The world in which to create the ping.
      */
-    public static void pingAtPosition(Vec3 pos, @Nullable Entity pingEntity, Player player, Level world) {
+    public static void pingAtPosition(Vec3 pos, @Nullable Entity pingEntity, @Nullable Player player, Level world) {
         boolean animate = true;
         boolean kill = true;
         HighlightSettings highlight = new HighlightSettings(VanillaPings.SETTINGS.isPingGlowing(), VanillaPings.SETTINGS.isPingGlowingFlash(), 5, .65f);
@@ -170,7 +170,7 @@ public class PingManager {
                 Compat.sendActionBar(playerEntity, pingDirMessage);
             }
 
-            if(pingEntity != null && (distance < VanillaPings.SETTINGS.getPingChatMessageRange() || VanillaPings.SETTINGS.hasInfinitePingChatMessageRange())) {
+            if(pingEntity != null && player != null && (distance < VanillaPings.SETTINGS.getPingChatMessageRange() || VanillaPings.SETTINGS.hasInfinitePingChatMessageRange())) {
                 var pingMessage = Translations.PING_MESSAGE.constructMessage(new Triple<>(player.getName().getString(), getTextForEntity(pingEntity), new Vec3i((int) Math.round(pos.x), (int)Math.round(pos.y), (int)Math.round(pos.z))));
                 Compat.sendChatMessage(playerEntity, pingMessage);
             }

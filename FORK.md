@@ -16,6 +16,13 @@ capability, not a claim to verify a genuine Tweakeroo installation.
 `ping-camera-enabled=false` disables camera requests; ordinary `/ping` still works.
 Existing servers fall back to the upstream packet only with an attached camera.
 
+Administrators, the server console and command blocks can create a location marker with
+`/ping <x> <y> <z>` without a player entity. Relative coordinates use the command source's
+position and dimension; unloaded and out-of-bounds positions are rejected. Entity ping
+chat messages expose an underlined coordinate which fills `x y z` into the chat input when
+clicked. Simplified Chinese is bundled and can be selected with
+`/vanillapings language zh_cn`.
+
 Manual acceptance needed: first person, Tweakeroo detached/rotated camera, entity behind
 block, slabs, unloaded terrain, cooldown, upstream client, upstream server, dimension
 change and disconnect. No production replacement until this is verified.
