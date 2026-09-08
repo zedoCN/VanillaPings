@@ -30,6 +30,7 @@ public class PingSettings extends Settings {
     private int pingCooldown = 5;
     private boolean pingItemCount = true;
     private boolean playSound = true;
+    private boolean cameraPings = true;
     private double pingItemCountRange = 1;
     private boolean pingRemoveOld = true;
     private boolean pingGlowing = true;
@@ -58,12 +59,14 @@ public class PingSettings extends Settings {
         cfg.put(KEY_PING_GLOWING_FLASH, pingGlowingFlash);
         cfg.put(KEY_PING_ITEM, Compat.itemId(pingItem).toString());
         cfg.put(KEY_PING_PLAY_SOUND, playSound);
+        cfg.put("ping-camera-enabled", cameraPings);
         super.saveSettings();
     }
 
     @Override
     protected void loadSettings() {
         super.loadSettings();
+        if (cfg.containsKey("ping-camera-enabled")) cameraPings = cfg.getBoolean("ping-camera-enabled");
         if(cfg.containsKey(KEY_DEFAULT_LANGUAGE))
             defaultLanguage = cfg.getString(KEY_DEFAULT_LANGUAGE);
         if(cfg.containsKey(KEY_PING_RANGE))
@@ -111,6 +114,8 @@ public class PingSettings extends Settings {
     public String getDefaultLanguage() {
         return defaultLanguage;
     }
+
+    public boolean isCameraPingsEnabled() { return cameraPings; }
 
     public double getPingRange() {
         return pingRange == -1 ? 5000 : pingRange;

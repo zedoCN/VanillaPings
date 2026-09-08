@@ -56,6 +56,44 @@ public class PingManager {
         pingInFrontOfEntity(player, null);
     }
 
+    /** Client camera coordinates are untrusted; only mark loaded terrain, never move the player. */
+    public static void pingFromCameraWithCooldown(Player player, Vec3 origin, Vec3 direction) {
+        if (playerCooldowns.containsKey(player.getUUID())) return;
+        // Invalid packets also consume cooldown; a configured zero cannot bypass the per-tick bound.
+        playerCooldowns.put(player.getUUID(), Math.max(1, VanillaPings.SETTINGS.getPingCooldown()));
+        if (!VanillaPings.SETTINGS.isCameraPingsEnabled()) return;
+        double range = VanillaPings.SETTINGS.getPingRange();
+        if (!CameraPingValidation.isValid(origin.x, origin.y, origin.z, direction.x, direction.y, direction.z,
+                player.getX(), player.getY(), player.getZ(), range)) return;
+        range = Math.min(range < 0 ? 256 : range, 256);
+        Level world = Compat.entityWorld(player);
+        Vec3 unit = direction.normalize();
+        // Work in short segments: bounded entity queries and stop at the first unloaded chunk.
+        for (double distance = 0; distance < range; distance += 4) {
+            Vec3 start = origin.add(unit.scale(distance));
+            Vec3 next = origin.add(unit.scale(Math.min(range, distance + 4)));
+            AABB box = new AABB(start, next).inflate(1);
+            for (int x = ((int)Math.floor(box.minX)) >> 4; x <= ((int)Math.floor(box.maxX)) >> 4; x++)
+                for (int z = ((int)Math.floor(box.minZ)) >> 4; z <= ((int)Math.floor(box.maxZ)) >> 4; z++)
+                    if (!world.hasChunk(x, z)) return;
+            if (!world.getWorldBorder().isWithinBounds(BlockPos.containing(next))) return;
+            BlockHitResult block = world.clip(new ClipContext(start, next, ClipContext.Block.OUTLINE,
+                    world.getFluidState(BlockPos.containing(origin)).isEmpty() ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, player));
+            Vec3 hit = block.getType() == HitResult.Type.MISS ? null : block.getLocation();
+            Entity target = null;
+            double closest = hit == null ? Double.POSITIVE_INFINITY : start.distanceToSqr(hit);
+            for (Entity entity : world.getEntities(player, box)) {
+                if (!entity.isAlive() || entity.isSpectator() || noPingText.equals(entity.getCustomName())) continue;
+                AABB bounds = entity.getBoundingBox().inflate(entity.getPickRadius());
+                Optional<Vec3> candidate = bounds.contains(start) ? Optional.of(start) : bounds.clip(start, next);
+                if (candidate.isPresent() && start.distanceToSqr(candidate.get()) < closest) {
+                    hit = candidate.get(); closest = start.distanceToSqr(hit); target = entity;
+                }
+            }
+            if (hit != null) { pingAtPosition(hit, target, player, world); return; }
+        }
+    }
+
     /**
      * Casts a raycast in the direction the player is facing in and spawns a ping.
      * @param player The player from which to cast the ray from.

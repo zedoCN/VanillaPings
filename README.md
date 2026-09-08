@@ -1,5 +1,8 @@
 # Vanilla Pings
 
+> Camera-ping development fork: see [FORK.md](FORK.md) for Tweakeroo Free Camera
+> support, server/client installation requirements, safety limits and test status.
+
 A Minecraft mod to easily ping entities and locations like in most popular shooter games. The pings show up using armor stands and have **glowing** on them. This makes it possible for the mod to be server-side only. Using it on the client will **add a hotkey**.
 <img src="https://cdn.modrinth.com/data/P6Y8Vr1q/images/3217cf61ecadc4927ce902033af7a80c5f4c551c.png" alt="drawing" width="700"/>
 <img src="https://cdn.modrinth.com/data/P6Y8Vr1q/images/daafdfde862a189de9eec894368119d77f837f33.gif" alt="drawing" width="700"/>
