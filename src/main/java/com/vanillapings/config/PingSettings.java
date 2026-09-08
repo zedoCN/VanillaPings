@@ -25,7 +25,7 @@ public class PingSettings extends Settings {
     private final List<SettingsEvent> settingEvents = new ArrayList<>();
     private String defaultLanguage = Translator.DEFAULT_LANGUAGE; //LanguageManager.DEFAULT_LANGUAGE_CODE;
     private double pingRange = 500;
-    private double pingChatMessageRange = 160;
+    private double pingChatMessageRange = 500;
     private double pingDirectionMessageRange = 160;
     private int pingCooldown = 5;
     private boolean pingItemCount = true;

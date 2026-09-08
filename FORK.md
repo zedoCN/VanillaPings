@@ -18,10 +18,13 @@ Existing servers fall back to the upstream packet only with an attached camera.
 
 Administrators, the server console and command blocks can create a location marker with
 `/ping <x> <y> <z>` without a player entity. Relative coordinates use the command source's
-position and dimension; unloaded and out-of-bounds positions are rejected. Entity ping
-chat messages expose an underlined coordinate which fills `x y z` into the chat input when
-clicked. Simplified Chinese is bundled and can be selected with
-`/vanillapings language zh_cn`.
+position and dimension. `/ping in <dimension> <x> <y> <z>` selects a dimension explicitly.
+Any finite Y coordinate is accepted (including above the Nether roof); unloaded chunks and
+positions outside the world border are rejected. Entity ping chat messages default to a
+500-block range and expose an underlined coordinate which fills `x y z` into the chat input
+when clicked. Simplified Chinese is selected automatically from each player's client language,
+so players using different languages receive localized messages at the same time. The
+configured server language remains only as the console/command-block fallback.
 
 Manual acceptance needed: first person, Tweakeroo detached/rotated camera, entity behind
 block, slabs, unloaded terrain, cooldown, upstream client, upstream server, dimension

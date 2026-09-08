@@ -9,7 +9,7 @@ import net.minecraft.commands.CommandSourceStack;
 public class RemoveCommand {
     public static int removeOldPings(CommandContext<CommandSourceStack> ctx) {
         int removed = PingManager.removeOldPings(ctx.getSource().getServer());
-        VanillaPingsCommands.sendCommandFeedBack(Translations.REMOVED_OLD.constructMessage(removed), ctx.getSource());
+        VanillaPingsCommands.sendCommandFeedBack(Translations.REMOVED_OLD.constructMessage(ctx.getSource(), removed), ctx.getSource());
         return Command.SINGLE_SUCCESS;
     }
 }

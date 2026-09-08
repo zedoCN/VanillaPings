@@ -10,6 +10,7 @@ import com.vanillapings.compat.Compat;
 import com.vanillapings.features.ping.PingManager;
 import com.vanillapings.translation.Translations;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.world.entity.LivingEntity;
@@ -97,24 +98,29 @@ public class VanillaPingsCommands {
                         })
                         .then(argument("position", Vec3Argument.vec3())
                                 .requires(Compat::isAdmin)
-                                .executes(ctx -> pingAtCoordinates(ctx.getSource(), Vec3Argument.getVec3(ctx, "position"))))
+                                .executes(ctx -> pingAtCoordinates(ctx.getSource(), Vec3Argument.getVec3(ctx, "position"), ctx.getSource().getLevel())))
+                        .then(literal("in")
+                                .requires(Compat::isAdmin)
+                                .then(argument("dimension", DimensionArgument.dimension())
+                                        .then(argument("position", Vec3Argument.vec3())
+                                                .executes(ctx -> pingAtCoordinates(ctx.getSource(), Vec3Argument.getVec3(ctx, "position"),
+                                                        DimensionArgument.getDimension(ctx, "dimension"))))))
         ));
     }
 
-    private static int pingAtCoordinates(CommandSourceStack source, Vec3 position) {
+    private static int pingAtCoordinates(CommandSourceStack source, Vec3 position, net.minecraft.server.level.ServerLevel level) {
         if (!Double.isFinite(position.x) || !Double.isFinite(position.y) || !Double.isFinite(position.z)) {
-            source.sendFailure(Translations.PING_POSITION_UNAVAILABLE.constructMessage());
+            source.sendFailure(Translations.PING_POSITION_UNAVAILABLE.constructMessage(source));
             return 0;
         }
         BlockPos blockPosition = BlockPos.containing(position);
-        if (source.getLevel().isOutsideBuildHeight(blockPosition)
-                || !source.getLevel().getWorldBorder().isWithinBounds(blockPosition)
-                || !source.getLevel().isLoaded(blockPosition)) {
-            source.sendFailure(Translations.PING_POSITION_UNAVAILABLE.constructMessage());
+        if (!level.getWorldBorder().isWithinBounds(blockPosition)
+                || !level.isLoaded(blockPosition)) {
+            source.sendFailure(Translations.PING_POSITION_UNAVAILABLE.constructMessage(source));
             return 0;
         }
 
-        PingManager.pingAtPosition(position, null, null, source.getLevel());
+        PingManager.pingAtPosition(position, null, null, level);
         return Command.SINGLE_SUCCESS;
     }
 

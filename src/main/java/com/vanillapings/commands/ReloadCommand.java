@@ -11,7 +11,7 @@ public class ReloadCommand {
     public static int Reload(CommandContext<CommandSourceStack> ctx) {
         VanillaPings.SETTINGS.reload();
         Translator.clearTranslators();
-        VanillaPingsCommands.sendCommandFeedBack(Translations.RELOAD.constructMessage(), ctx.getSource());
+        VanillaPingsCommands.sendCommandFeedBack(Translations.RELOAD.constructMessage(ctx.getSource()), ctx.getSource());
         return Command.SINGLE_SUCCESS;
     }
 }

@@ -12,10 +12,10 @@ public class LanguageCommand {
     public static int setLanguage(CommandContext<CommandSourceStack> ctx, String language) {
         Translator.clearTranslators();
         if(Translator.loadLanguage(language))
-            VanillaPingsCommands.sendCommandFeedBack(Translations.LANGUAGE.constructMessage(VanillaPings.SETTINGS.setLangauge(language)), ctx.getSource());
+            VanillaPingsCommands.sendCommandFeedBack(Translations.LANGUAGE.constructMessage(ctx.getSource(), VanillaPings.SETTINGS.setLangauge(language)), ctx.getSource());
         else {
             Translator.loadLanguage(VanillaPings.SETTINGS.getDefaultLanguage());
-            VanillaPingsCommands.sendCommandFeedBack(Translations.LANGUAGE_ERROR.constructMessage().withStyle(ChatFormatting.RED), ctx.getSource());
+            VanillaPingsCommands.sendCommandFeedBack(Translations.LANGUAGE_ERROR.constructMessage(ctx.getSource()).withStyle(ChatFormatting.RED), ctx.getSource());
         }
         return Command.SINGLE_SUCCESS;
     }

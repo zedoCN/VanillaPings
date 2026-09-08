@@ -8,7 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 
 public class SoundCommand {
     public static int setSound(CommandContext<CommandSourceStack> ctx, boolean value) {
-        VanillaPingsCommands.sendCommandFeedBack(Translations.SOUND_ENABLED.constructMessage(value, VanillaPings.SETTINGS.setPlaySound(value)), ctx.getSource());
+        VanillaPingsCommands.sendCommandFeedBack(Translations.SOUND_ENABLED.constructMessage(ctx.getSource(), value, VanillaPings.SETTINGS.setPlaySound(value)), ctx.getSource());
         return Command.SINGLE_SUCCESS;
     }
 }

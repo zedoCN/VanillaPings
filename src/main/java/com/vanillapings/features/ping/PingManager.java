@@ -3,6 +3,7 @@ package com.vanillapings.features.ping;
 import com.vanillapings.VanillaPings;
 import com.vanillapings.compat.Compat;
 import com.vanillapings.translation.Translations;
+import com.vanillapings.translation.Translator;
 import com.vanillapings.util.InputCooldown;
 import com.vanillapings.util.Triple;
 import net.minecraft.world.level.block.state.BlockState;
@@ -166,12 +167,16 @@ public class PingManager {
             if(distance < VanillaPings.SETTINGS.getPingDirectionMessageRange() || VanillaPings.SETTINGS.hasInfinitePingDirectionMessageRange()) {
                 double degree = getDegreeDirectionToPing(pos, Compat.entityPos(playerEntity));
                 double relDegree = getRelativeDegree(degree, playerEntity.getYRot());
-                var pingDirMessage = Translations.PING_DIRECTION_MESSAGE.constructMessage(new Triple<>(distance, getPingDirectionArrow(relDegree), getPingCardinalDirection(degree)));
+                var pingDirMessage = Translations.PING_DIRECTION_MESSAGE.constructMessage(
+                        Translator.getTranslator(playerEntity),
+                        new Triple<>(distance, getPingDirectionArrow(relDegree), getPingCardinalDirection(degree)));
                 Compat.sendActionBar(playerEntity, pingDirMessage);
             }
 
             if(pingEntity != null && player != null && (distance < VanillaPings.SETTINGS.getPingChatMessageRange() || VanillaPings.SETTINGS.hasInfinitePingChatMessageRange())) {
-                var pingMessage = Translations.PING_MESSAGE.constructMessage(new Triple<>(player.getName().getString(), getTextForEntity(pingEntity), new Vec3i((int) Math.round(pos.x), (int)Math.round(pos.y), (int)Math.round(pos.z))));
+                var pingMessage = Translations.PING_MESSAGE.constructMessage(
+                        Translator.getTranslator(playerEntity),
+                        new Triple<>(player.getName().getString(), getTextForEntity(pingEntity), new Vec3i((int) Math.round(pos.x), (int)Math.round(pos.y), (int)Math.round(pos.z))));
                 Compat.sendChatMessage(playerEntity, pingMessage);
             }
         });

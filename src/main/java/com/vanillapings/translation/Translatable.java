@@ -1,6 +1,7 @@
 package com.vanillapings.translation;
 
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.commands.CommandSourceStack;
 
 public class Translatable {
     @FunctionalInterface
@@ -26,5 +27,9 @@ public class Translatable {
 
     public MutableComponent constructMessage() {
         return constructMessage(Translator.getTranslator());
+    }
+
+    public MutableComponent constructMessage(CommandSourceStack source) {
+        return constructMessage(Translator.getTranslator(source));
     }
 }

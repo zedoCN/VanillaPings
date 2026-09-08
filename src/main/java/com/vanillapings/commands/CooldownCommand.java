@@ -8,7 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 
 public class CooldownCommand {
     public static int setPingCooldown(CommandContext<CommandSourceStack> ctx, int ticks) {
-        VanillaPingsCommands.sendCommandFeedBack(Translations.COOLDOWN.constructMessage(ticks, VanillaPings.SETTINGS.setPingCooldown(ticks)), ctx.getSource());
+        VanillaPingsCommands.sendCommandFeedBack(Translations.COOLDOWN.constructMessage(ctx.getSource(), ticks, VanillaPings.SETTINGS.setPingCooldown(ticks)), ctx.getSource());
         return Command.SINGLE_SUCCESS;
     }
 }

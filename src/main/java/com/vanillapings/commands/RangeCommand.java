@@ -8,17 +8,17 @@ import net.minecraft.commands.CommandSourceStack;
 
 public class RangeCommand {
     public static int setRange(CommandContext<CommandSourceStack> ctx, double value) {
-        VanillaPingsCommands.sendCommandFeedBack(Translations.RANGE.constructMessage(value, VanillaPings.SETTINGS.setPingRange(value)), ctx.getSource());
+        VanillaPingsCommands.sendCommandFeedBack(Translations.RANGE.constructMessage(ctx.getSource(), value, VanillaPings.SETTINGS.setPingRange(value)), ctx.getSource());
         return Command.SINGLE_SUCCESS;
     }
 
     public static int setChatRange(CommandContext<CommandSourceStack> ctx, double value) {
-        VanillaPingsCommands.sendCommandFeedBack(Translations.CHAT_RANGE.constructMessage(value, VanillaPings.SETTINGS.setPingChatMessageRange(value)), ctx.getSource());
+        VanillaPingsCommands.sendCommandFeedBack(Translations.CHAT_RANGE.constructMessage(ctx.getSource(), value, VanillaPings.SETTINGS.setPingChatMessageRange(value)), ctx.getSource());
         return Command.SINGLE_SUCCESS;
     }
 
     public static int setDirectionMessageRange(CommandContext<CommandSourceStack> ctx, double value) {
-        VanillaPingsCommands.sendCommandFeedBack(Translations.DIRECTION_MESSAGE_RANGE.constructMessage(value, VanillaPings.SETTINGS.setPingDirectionMessageRange(value)), ctx.getSource());
+        VanillaPingsCommands.sendCommandFeedBack(Translations.DIRECTION_MESSAGE_RANGE.constructMessage(ctx.getSource(), value, VanillaPings.SETTINGS.setPingDirectionMessageRange(value)), ctx.getSource());
         return Command.SINGLE_SUCCESS;
     }
 }

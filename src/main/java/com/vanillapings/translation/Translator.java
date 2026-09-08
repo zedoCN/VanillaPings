@@ -9,6 +9,9 @@ import com.vanillapings.compat.Compat;
 import com.vanillapings.config.FileConfig;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,11 +21,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class Translator {
     public static final String DEFAULT_LANGUAGE = "en_us";
     public static Map<String, Translator> languages = new HashMap<>();
+    private static final Set<String> unavailableLanguages = new HashSet<>();
     private static final String RESOURCE_BASE = "assets/vanillapings/lang";
     private Map<String, String> translations;
 
@@ -108,6 +115,7 @@ public class Translator {
 
     public static void clearTranslators() {
         languages.clear();
+        unavailableLanguages.clear();
     }
 
     public static Translator getTranslator(String key) {
@@ -124,5 +132,27 @@ public class Translator {
 
     public static Translator getTranslator() {
         return getTranslator(VanillaPings.SETTINGS.getDefaultLanguage());
+    }
+
+    /** Resolve the locale reported by a client, falling back without changing server settings. */
+    public static Translator getTranslator(Player player) {
+        if (player instanceof ServerPlayer serverPlayer)
+            return getClientTranslator(serverPlayer.clientInformation().language());
+        return getTranslator();
+    }
+
+    /** Console and command blocks use the configured fallback; players use their client locale. */
+    public static Translator getTranslator(CommandSourceStack source) {
+        ServerPlayer player = source.getPlayer();
+        return player == null ? getTranslator() : getTranslator(player);
+    }
+
+    private static Translator getClientTranslator(String language) {
+        String normalized = language == null ? "" : language.toLowerCase(Locale.ROOT).replace('-', '_');
+        if (!normalized.isBlank() && !languages.containsKey(normalized) && !unavailableLanguages.contains(normalized)) {
+            if (!loadLanguage(normalized))
+                unavailableLanguages.add(normalized);
+        }
+        return languages.getOrDefault(normalized, getTranslator(DEFAULT_LANGUAGE));
     }
 }

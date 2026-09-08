@@ -1,6 +1,7 @@
 package com.vanillapings.translation;
 
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.commands.CommandSourceStack;
 
 
 public class TranslatableSingle<U> extends Translatable {
@@ -37,6 +38,10 @@ public class TranslatableSingle<U> extends Translatable {
 
     public MutableComponent constructMessage(U extra) {
         return constructMessage(Translator.getTranslator(), extra);
+    }
+
+    public MutableComponent constructMessage(CommandSourceStack source, U extra) {
+        return constructMessage(Translator.getTranslator(source), extra);
     }
 
     public MutableComponent constructMessage(Translator translator) {
